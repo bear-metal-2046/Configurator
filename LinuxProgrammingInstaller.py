@@ -35,7 +35,7 @@ def getAmazonCorretto17():
     os.system('echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list')
     os.system('sudo apt-get update; sudo apt-get install -y java-17-amazon-corretto-jdk')
     print("Amazon Corretto 17 installed!")
-    print(f"JAVA_HOME is now {os.environ.get("JAVA_HOME")}")
+    print(f"JAVA_HOME is now " + os.environ.get("JAVA_HOME"))
 
 def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/37573701
     # Streaming, so we can iterate over the response.
