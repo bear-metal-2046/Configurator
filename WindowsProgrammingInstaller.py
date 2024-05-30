@@ -23,8 +23,6 @@ except ModuleNotFoundError:
     import pyautogui as pag
 
 
-global accountname
-
 def getAppInstaller():
     print("Downloading App Installer MSIX Bundle...")
     path = f'C:/Users/{accountname}/Downloads/wingetInstaller.msixbundle'
@@ -138,7 +136,7 @@ def WPILibInstallerInputs():
     time.sleep(60)
     pag.press("tab")
     pag.press("enter")
-    time.sleep(2)
+    time.sleep(5)
     pag.press("tab")
     pag.press("tab")
     pag.press("enter")
@@ -147,6 +145,7 @@ def WPILibInstallerInputs():
     input("Please press enter when install option is chosen.")
 
 def main():
+    global accountname
     accountname = os.getlogin()
     if (sys.argv.__contains__("-h") or len(sys.argv) == 1):
         print(

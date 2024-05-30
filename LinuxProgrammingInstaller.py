@@ -23,15 +23,13 @@ except ModuleNotFoundError:
     import pyautogui as pag
 
 
-global accountname
-
 def getJetBrainsPackages():
+    print("Using snap to install JetBrains Intellij IDEA...")
     os.system("sudo snap install intellij-idea-community --classic")
     print("JetBrains Intellij IDEA installed!")
 
 def getAmazonCorretto17():
-    pkgpath = input("Package Download Path: ")
-    print("Using downloading and installing Amazon Corretto 17 (Java)...")
+    print("Downloading and installing Amazon Corretto 17 (Java)...")
     # These commands are straight from https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/generic-linux-install.html
     os.system("wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg && \\")
     os.system('echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list')
@@ -91,7 +89,7 @@ def getWPILib():
     print("WPILib Installing")
     print("Attempting to dismount disk image (requires admin privileges)...")
     if os.system(f"") != 0:
-        print("\033[1;31;40m Dismount failed!  Eject disk manually in File Explorer. \033[0m")
+        print("\033[1;40m Dismount failed!  Eject disk manually in File Explorer. \033[0m")
     print("")
 
 def runWPILibInstaller(mountpoint):
@@ -113,7 +111,6 @@ def WPILibInstallerInputs():
     input("Please press enter when install option is chosen.")
 
 def main():
-    accountname = os.getlogin()
     if (sys.argv.__contains__("-h") or len(sys.argv) == 1):
         print(
 """This is a Python script to install all necessary tools for programming on FRC team 2046 Bear Metal on your computer (if your computer runs on a Linux OS).
@@ -124,8 +121,6 @@ Run Options:
 -j -> install JetBrains Intellij IDEA (requires WinGet)
 -c -> install Amazon Corretto 17 (Java)
 -h -> display help info""")
-    if (sys.argv.__contains__("-u")):
-        accountname = input("Admin Name Override:")
     if (sys.argv.__contains__("-a")):
         print("Beginning computer setup...")
         getAmazonCorretto17()
