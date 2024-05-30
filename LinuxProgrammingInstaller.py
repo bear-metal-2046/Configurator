@@ -90,7 +90,8 @@ def getWPILib():
     print("Attempting to dismount disk image (requires admin privileges)...")
     if os.system(f"") != 0:
         print("\033[1;40m Dismount failed!  Eject disk manually in File Explorer. \033[0m")
-    print("")
+        print("Attempting to delete WPILib ISO...")
+        os.system(f"rm {path}")
 
 def runWPILibInstaller(mountpoint):
     os.system(f"{mountpoint}/WPILibInstaller.exe")

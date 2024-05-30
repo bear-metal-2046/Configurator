@@ -100,7 +100,6 @@ def getWPILib():
     print("Attempting to dismount disk image (requires admin privileges)...")
     if os.system(f'runas /noprofile /user:Administrator "cmd /c Dismount-DiskImage -ImagePath {path}"') != 0:
         print("Dismount failed!  Eject disk manually in File Explorer.")
-    else:
         print("Attempting to delete WPILib ISO...")
         os.system(f"del {path}")
 
