@@ -5,21 +5,21 @@ try:
     from tqdm import tqdm
 except ModuleNotFoundError:
     print("Python Package 'tqdm' not found.  Installing...")
-    os.system("pip3 install tqdm")
+    os.system("python3 -m pip install tqdm")
     from tqdm import tqdm
 
 try:
     import requests as rq
 except ModuleNotFoundError:
     print("Python Package 'requests' not found.  Installing...")
-    os.system("pip3 install requests")
+    os.system("python3 -m pip install requests")
     import requests as rq
 
 try:
     import pyautogui as pag
 except ModuleNotFoundError:
     print("Python Package 'pyautogui' not found.  Installing...")
-    os.system("pip3 install pyautogui")
+    os.system("python3 -m pip install pyautogui")
     import pyautogui as pag
 
 
