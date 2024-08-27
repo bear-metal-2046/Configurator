@@ -1,5 +1,7 @@
 import os
-import sys
+import argparse
+
+os.system("python3 -m pip install --upgrade pip")
 
 try:
     from tqdm import tqdm
@@ -56,7 +58,7 @@ def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/3757
 
 def getWPILib():
     import threading
-    path = input("Download directory: ")
+    path = input("Path to save WPILib ISO: ")
     print("Checking for WPILib ISO...")
     try:  # This is a lengthy download, so this checks to see if we really need to do all the work.
         open(path, 'r')
@@ -81,6 +83,7 @@ def getWPILib():
     os.system(f"mount {path} {mountpoint}")
     print("Executing installer...")
     print("Careful, this will push buttons on your computer for you.")
+    # Starting seperate threads for the WPILib installer and the automated inputs
     t1 = threading.Thread(target=lambda : runWPILibInstaller(mountpoint))
     t2 = threading.Thread(target=WPILibInstallerInputs)
     t1.start()
@@ -89,9 +92,12 @@ def getWPILib():
     print("WPILib Installing")
     print("Attempting to dismount disk image (requires admin privileges)...")
     if os.system(f"") != 0:
-        print("\033[1;40m Dismount failed!  Eject disk manually in File Explorer. \033[0m")
+        print("\033[1;40m Dismount failed!  Eject disk manually later. \033[0m")
         print("Attempting to delete WPILib ISO...")
-        os.system(f"rm {path}")
+        if (os.system(f"rm {path}") == 1):
+            print("Succeeded in cleaning up the WPILib ISO.")
+        else:
+            print("Failed in deleting the WPILib ISO.  This suggests that something went wrong somewhere else.")
 
 def runWPILibInstaller(mountpoint):
     os.system(f"{mountpoint}/WPILibInstaller.exe")
@@ -103,7 +109,7 @@ def WPILibInstallerInputs():
     time.sleep(60)
     pag.press("tab")
     pag.press("enter")
-    time.sleep(2)
+    time.sleep(5)
     pag.press("tab")
     pag.press("tab")
     pag.press("enter")
@@ -112,28 +118,29 @@ def WPILibInstallerInputs():
     input("Please press enter when install option is chosen.")
 
 def main():
-    if (sys.argv.__contains__("-h") or len(sys.argv) == 1):
-        print(
-"""This is a Python script to install all necessary tools for programming on FRC team 2046 Bear Metal on your computer (if your computer runs on a Linux OS).
-(unfortunately, there is no Phoenix Tuner X or FRC Game Tools for Linux)
-Run Options:
--a -> install everything this script can install
--w -> install WPILib
--j -> install JetBrains Intellij IDEA (requires WinGet)
--c -> install Amazon Corretto 17 (Java)
--h -> display help info""")
-    if (sys.argv.__contains__("-a")):
+    global accountname
+
+    parser = argparse.ArgumentParser(description="This is a Python script to install all necessary tools for programming on FRC team 2046 Bear Metal on your computer (if your computer runs on Windows OS).")
+    parser.add_argument('-a', action='store_true', help='Install everything this script can install')
+    parser.add_argument('-w', action='store_true', help='Install WPILib')
+    parser.add_argument('-j', action='store_true', help='Install JetBrains Packages')
+    parser.add_argument('-c', action='store_true', help='Install Amazon Corretto 17 (Java)')
+
+    args = parser.parse_args()
+
+    if args.a:
         print("Beginning computer setup...")
         getAmazonCorretto17()
         getJetBrainsPackages()
         getWPILib()
         print("Assuming nothing went wrong on the way, your computer is now ready to program on!")
-    if (sys.argv.__contains__("-w")):
-        getWPILib()
-    if (sys.argv.__contains__("-j")):
-        getJetBrainsPackages()
-    if (sys.argv.__contains__("-c")):
-        getAmazonCorretto17()
+    else:
+        if args.w:
+            getWPILib()
+        if args.j:
+            getJetBrainsPackages()
+        if args.c:
+            getAmazonCorretto17()
 
 if __name__ == "__main__":
     main()
