@@ -7,32 +7,38 @@ try:
     from tqdm import tqdm
 except ModuleNotFoundError:
     print("Python Package 'tqdm' not found.  Installing...")
-    os.system("cmd /c python3 -m pip install tqdm")
+    os.system("cmd /c pip install tqdm")
     from tqdm import tqdm
 
 try:
     import requests as rq
 except ModuleNotFoundError:
     print("Python Package 'requests' not found.  Installing...")
-    os.system("cmd /c python3 -m pip install requests")
+    os.system("cmd /c pip install requests")
     import requests as rq
 
 try:
     import pyautogui as pag
 except ModuleNotFoundError:
     print("Python Package 'pyautogui' not found.  Installing...")
-    os.system("cmd /c python3 -m pip install pyautogui")
+    os.system("cmd /c pip install pyautogui")
     import pyautogui as pag
 
 
 def getAppInstaller():
     print("Downloading App Installer MSIX Bundle...")
-    path = f'C:/Users/{accountname}/Downloads/wingetInstaller.msixbundle'
+    path = f'{download_location}\\wingetInstaller.msixbundle'
     downloadFileInStream("https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle", path)
-    os.system(f"cmd /c winget upgrade winget")
     os.system(f"cmd /c {path}")
+    pag.press('tab')
     pag.press('enter')
-    print("App Installer installed!")
+    if (os.system(f"cmd /c winget upgrade winget") == 1):
+        print("App Installer installed!")
+    else:
+        print("App Installer failed to install")
+        print("This could mean you are on a Linux based OS and are using the wrong script.")
+        print("If you are on Windows, to proceed, go to the microsoft store and install the App Installer.")
+        exit()
 
 def getJetBrainsPackages():
     print("Using winget to download JetBrains software... (Intellij IDEA and Toolbox)")
@@ -42,12 +48,12 @@ def getJetBrainsPackages():
 
 def getPhoenixTunerX():
     print("Using winget to download Phoenix Tuner X...")
-    os.system("cmd /c winget install 'Phoenix Tuner X'")
+    os.system("cmd /c winget install 9NVV4PWDW27Z")
     print("Pheonix Tuner X installed!")
 
 def getAmazonCorretto17():
     print("Using winget to download Amazon Corretto 17 (Java)...")
-    os.system("cmd /c winget install 'Amazon Corretto 17'")
+    os.system("cmd /c winget install Amazon.Corretto.17.JDK")
     print("Amazon Corretto 17 installed!")
 
 def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/37573701
@@ -69,7 +75,8 @@ def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/3757
 
 def getWPILib():
     import threading
-    path = f'C:/Users/{accountname}/Downloads/WPILibDisk.iso'
+    import time
+    path = f'{download_location}\\WPILibDisk.iso'
     print("Checking for WPILib ISO...")
     try:  # This is a lengthy download, so this checks to see if we really need to do all the work.
         open(path, 'r')
@@ -91,6 +98,8 @@ def getWPILib():
             return
     print("Mounting WPILib Disk Image...")
     os.system(f"powershell Mount-DiskImage -ImagePath {path}")
+    print("Waiting for the mounting process to finish...")
+    time.sleep(10)
     print("Executing installer...")
     print("Careful, this will push buttons on your computer for you.")
     t1 = threading.Thread(target=runWPILibInstaller)
@@ -99,8 +108,9 @@ def getWPILib():
     t2.start()
     t2.join()
     print("WPILib Installing")
+    t1.join()
     print("Attempting to dismount disk image (requires admin privileges)...")
-    if os.system(f'runas /noprofile /user:Administrator "cmd /c Dismount-DiskImage -ImagePath {path}"') != 0:
+    if os.system(f'runas /noprofile /user:{accountname} "powershell Dismount-DiskImage -ImagePath {path}"') != 0:
         print("\033[1;40m Dismount failed!  Eject disk manually in File Explorer. \033[0m")
     else:
         print("Attempting to delete WPILib ISO...")
@@ -113,7 +123,7 @@ def getGameTools():
     # year and version are not essential, but nice if you want the right download name.
     year = 2024
     version = 24.0
-    path = f"C:\\Users\\{accountname}\\Downloads\\ni-frc-{year}-game-tools_{version}_online.exe"
+    path = f"{download_location}\\ni-frc-{year}-game-tools_{version}_online.exe"
     print("Downloading FRC Game Tools Package Manager...")
     downloadFileInStream("https://www.ni.com/en/support/downloads/drivers/download/packaged.frc-game-tools.500107.html", path)
     print("Running installer...")
@@ -129,7 +139,7 @@ def runWPILibInstaller():
     driveLetters = ["D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     driveLetterNum = 0
     returnNum = 1
-    while returnNum != 0:
+    while returnNum != 0 and driveLetterNum != len(driveLetters) - 1:
         driveLetter = driveLetters[driveLetterNum]
         print(f"Checking {driveLetter}:/ for installer")    
         returnNum = os.system(f"cmd /c {driveLetter}:/WPILibInstaller.exe")
@@ -137,7 +147,8 @@ def runWPILibInstaller():
             print("WPILib Install Process Finished!")
             return
         driveLetterNum += 1
-    print("Could not find mounted WPILib ISO (disk image).")
+    print("Could not find mounted WPILib ISO (disk image).  Please wait...")
+    return
 
 def WPILibInstallerInputs():
     # We love reliable code |
@@ -152,9 +163,10 @@ def WPILibInstallerInputs():
     pag.press("enter")
     pag.press("tab")
     pag.press("enter")
-    input("Please press enter when install option is chosen.")
+    input("Please press enter when install option is chosen.  If the install process failed, press enter and contact someone for help. ")
 
 def main():
+    global download_location
     global accountname
 
     accountname = os.getlogin()
@@ -167,17 +179,24 @@ def main():
     parser.add_argument('-c', action='store_true', help='Install Amazon Corretto 17 (Java)')
     parser.add_argument('-p', action='store_true', help='Install Phoenix Tuner X')
     parser.add_argument('-g', action='store_true', help='Install FRC Game Tools')
-    parser.add_argument('--download_location', nargs='?', default=[f"C:\\Users\\{accountname}\\Downloads\\ni-frc-game-tools_online.exe"], )
+    parser.add_argument('--download_location', nargs='?', default=[f"C:\\Users\\{accountname}\\Downloads"], )
     parser.add_argument('--user', nargs='?', default=[accountname], help="Specifies which user's Downloads folder temp files go to.  Defaults to the currently logged in user.")
 
     args = parser.parse_args()
     accountname = args.user[0]
+    
+    if (args.download_location != [f"C:\\Users\\{os.getlogin()}\\Downloads"]):
+        download_location = f"C:\\Users\\{accountname}\\Downloads"
+    else:
+        download_location = args.download_location[0]
 
     if args.a:
         print("Beginning computer setup...")
+        print("Checking winget install, version: ", end="")
         if os.system("cmd /c winget -v") != 0:
             getAppInstaller()
         else:
+            print("Attempting to upgrade winget...")
             os.system("cmd /c winget upgrade winget")
         getPhoenixTunerX()
         getAmazonCorretto17()
