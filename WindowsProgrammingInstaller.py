@@ -157,6 +157,8 @@ def WPILibInstallerInputs():
 def main():
     global accountname
 
+    accountname = os.getlogin()
+
     parser = argparse.ArgumentParser(description="This is a Python script to install all necessary tools for programming on FRC team 2046 Bear Metal on your computer (if your computer runs on Windows OS).")
     parser.add_argument('-a', action='store_true', help='Install everything this script can install')
     parser.add_argument('-w', action='store_true', help='Install WPILib')
@@ -166,10 +168,10 @@ def main():
     parser.add_argument('-p', action='store_true', help='Install Phoenix Tuner X')
     parser.add_argument('-g', action='store_true', help='Install FRC Game Tools')
     parser.add_argument('--download_location', nargs='?', default=[f"C:\\Users\\{accountname}\\Downloads\\ni-frc-game-tools_online.exe"], )
-    parser.add_argument('--user', nargs='?', default=[os.getlogin()], help="Specifies which user's Downloads folder temp files go to.  Defaults to the currently logged in user.")
+    parser.add_argument('--user', nargs='?', default=[accountname], help="Specifies which user's Downloads folder temp files go to.  Defaults to the currently logged in user.")
 
     args = parser.parse_args()
-    accountname = args.user_override[0]
+    accountname = args.user[0]
 
     if args.a:
         print("Beginning computer setup...")
