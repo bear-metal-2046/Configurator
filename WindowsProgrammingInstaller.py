@@ -179,7 +179,7 @@ def main():
     parser.add_argument('-c', action='store_true', help='Install Amazon Corretto 17 (Java)')
     parser.add_argument('-p', action='store_true', help='Install Phoenix Tuner X')
     parser.add_argument('-g', action='store_true', help='Install FRC Game Tools')
-    parser.add_argument('--download_location', nargs='?', default=[f"C:\\Users\\{accountname}\\Downloads"], help="Specifies the location to download any temporary files and installers into.")
+    parser.add_argument('--download_location', nargs='?', default=[f"C:\\Users\\{accountname}\\Downloads"], help="Specifies the location to download any temporary files and installers into (not the default install location for the installed applications).")
     parser.add_argument('--user', nargs='?', default=[accountname], help="Specifies which user's Downloads folder temp files go to.  Defaults to the currently logged in user.")
 
     args = parser.parse_args()
