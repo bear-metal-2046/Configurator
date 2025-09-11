@@ -51,10 +51,10 @@ def getPhoenixTunerX():
     os.system("cmd /c winget install 9NVV4PWDW27Z")
     print("Pheonix Tuner X installed!")
 
-def getAmazonCorretto17():
-    print("Using winget to download Amazon Corretto 17 (Java)...")
-    os.system("cmd /c winget install Amazon.Corretto.17.JDK")
-    print("Amazon Corretto 17 installed!")
+def getEclipseTemurin17():
+    print("Using winget to download Eclipse Temurin 17 (Java)...")
+    os.system("cmd /c winget install EclipseAdoptium.Temurin.17.JDK")
+    print("Eclipse Temurin 17 installed!")
 
 def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/37573701
     # Streaming, so we can iterate over the response.
@@ -84,7 +84,7 @@ def getWPILib():
         print("WPILib Installer ISO not found.")
         print("Downloading WPILib ISO...")
         print("This might take a while...")
-        version="2025.1.1"
+        version="2025.3.2"
         try:
             downloadFileInStream(f"https://packages.wpilib.workers.dev/installer/v{version}/Win64/WPILib_Windows-{version}.iso", path)
         except IOError as e:
@@ -121,11 +121,11 @@ def getWPILib():
 
 def getGameTools():
     # year and version are not essential, but nice if you want the right download name.
-    year = 2024
-    version = 24.0
+    year = 2025
+    version = 25.0
     path = f"{download_location}\\ni-frc-{year}-game-tools_{version}_online.exe"
     print("Downloading FRC Game Tools Package Manager...")
-    downloadFileInStream("https://www.ni.com/en/support/downloads/drivers/download/packaged.frc-game-tools.500107.html", path)
+    downloadFileInStream("https://www.ni.com/en/support/downloads/drivers/download/packaged.frc-game-tools.553883.html", path)
     print("Running installer...")
     if (os.system(f"cmd /c {path} --passive --accept-eulas --prevent-activation --prevent-reboot") != 0):
         print(f"Install process failed!  Try running {path} manually (through File Explorer).")
@@ -199,7 +199,7 @@ def main():
             print("Attempting to upgrade winget...")
             os.system("cmd /c winget upgrade winget")
         getPhoenixTunerX()
-        getAmazonCorretto17()
+        getEclipseTemurin17()
         getJetBrainsPackages()
         getGameTools()
         getWPILib()
@@ -212,7 +212,7 @@ def main():
         if args.j:
             getJetBrainsPackages()
         if args.c:
-            getAmazonCorretto17()
+            getEclipseTemurin17()
         if args.p:
             getPhoenixTunerX()
         if args.g:

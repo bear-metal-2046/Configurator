@@ -30,13 +30,10 @@ def getJetBrainsPackages():
     os.system("sudo snap install intellij-idea-community --classic")
     print("JetBrains Intellij IDEA installed!")
 
-def getAmazonCorretto17():
-    print("Downloading and installing Amazon Corretto 17 (Java)...")
-    # These commands are straight from https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/generic-linux-install.html
-    os.system("wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg && \\")
-    os.system('echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list')
-    os.system('sudo apt-get update; sudo apt-get install -y java-17-amazon-corretto-jdk')
-    print("Amazon Corretto 17 installed!")
+def getEclipseTemurin17():
+    print("Downloading and installing Eclipse Temurin 17 (Java)...")
+    os.system("apt-get install temurin-21-jdk")
+    print("Eclipse Temurin 17 installed!")
     print(f"JAVA_HOME is now " + os.environ.get("JAVA_HOME"))
 
 def downloadFileInStream(url, filepath): # from https://stackoverflow.com/a/37573701
@@ -66,7 +63,7 @@ def getWPILib():
         print("WPILib Installer ISO not found.")
         print("Downloading WPILib ISO...")
         print("(This might take a while)")
-        version="2025.1.1"
+        version="2025.3.2"
         try:
             downloadFileInStream(f"https://packages.wpilib.workers.dev/installer/v{version}/Win64/WPILib_Windows-{version}.iso", path)
         except IOError as e:
