@@ -127,7 +127,7 @@ def main():
 
     if args.a:
         print("Beginning computer setup...")
-        getAmazonCorretto17()
+        getEclipseTemurin17()
         getJetBrainsPackages()
         getWPILib()
         print("Assuming nothing went wrong on the way, your computer is now ready to program on!")
@@ -137,7 +137,7 @@ def main():
         if args.j:
             getJetBrainsPackages()
         if args.c:
-            getAmazonCorretto17()
+            getEclipseTemurin17()
 
 if __name__ == "__main__":
     main()
