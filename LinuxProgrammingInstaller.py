@@ -63,7 +63,7 @@ def getWPILib():
         print("WPILib Installer ISO not found.")
         print("Downloading WPILib ISO...")
         print("(This might take a while)")
-        version="2025.3.2"
+        version="2026.2.1"
         try:
             downloadFileInStream(f"https://packages.wpilib.workers.dev/installer/v{version}/Win64/WPILib_Windows-{version}.iso", path)
         except IOError as e:
