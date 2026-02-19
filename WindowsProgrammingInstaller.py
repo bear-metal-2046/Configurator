@@ -84,7 +84,7 @@ def getWPILib():
         print("WPILib Installer ISO not found.")
         print("Downloading WPILib ISO...")
         print("This might take a while...")
-        version="2025.3.2"
+        version="2026.2.1"
         try:
             downloadFileInStream(f"https://packages.wpilib.workers.dev/installer/v{version}/Win64/WPILib_Windows-{version}.iso", path)
         except IOError as e:
@@ -125,7 +125,7 @@ def getGameTools():
     version = 25.0
     path = f"{download_location}\\ni-frc-{year}-game-tools_{version}_online.exe"
     print("Downloading FRC Game Tools Package Manager...")
-    downloadFileInStream("https://www.ni.com/en/support/downloads/drivers/download/packaged.frc-game-tools.553883.html", path)
+    downloadFileInStream("https://www.ni.com/en/support/downloads/drivers/download/packaged.frc-game-tools.581857.html", path)
     print("Running installer...")
     if (os.system(f"cmd /c {path} --passive --accept-eulas --prevent-activation --prevent-reboot") != 0):
         print(f"Install process failed!  Try running {path} manually (through File Explorer).")
